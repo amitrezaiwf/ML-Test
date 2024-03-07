@@ -105,22 +105,16 @@ pred_logit = logit.predict(X_test)
 #print("The accuracy of logit model is:", accuracy_score(y_test, pred_logit))
 #print(classification_report(y_test, pred_logit))
 
-y_pred = logit.predict(X_test)
-pred_class = y_pred
+pred_class_lr = logit.predict(X_test)
+true_class = np.array(y_test)
 
-y_test_lr = np.array(y_test)
-true_class = y_test_lr
-
-cm1 = metrics.confusion_matrix(true_class, pred_class)
+cm_lr = metrics.confusion_matrix(true_class, pred_class_lr)
 
 rf_clf = RandomForestClassifier()
 rf_clf.fit(X_train, y_train)
-rf_predict = rf_clf.predict(X_test)
-y_pred2 = rf_clf.predict(X_test)
-pred_class = y_pred2
-y_test_rf = np.array(y_test)
-true_class = y_test_rf
-cm2 = metrics.confusion_matrix(true_class, pred_class)
+
+pred_class_rf = rf_clf.predict(X_test)
+cm_rf = metrics.confusion_matrix(true_class, pred_class_rf)
 
 
 # Streamlit web app
@@ -129,26 +123,27 @@ st.title("Credit Risk Classification App")
 # Make predictions
 st.write(f"Predicted Credit Risk (Logistic Regression):")
 
-accuracy = accuracy_score(y_test_lr, y_pred)
+accuracy_lr = accuracy_score(y_test, pred_class_lr)
+
 # Display model accuracy
-st.write(f"Model Accuracy: {accuracy:.2%}")
+st.write(f"Model Accuracy: {accuracy_lr:.2%}")
 
 #---
 
 fig, ax = plt.subplots(figsize = (6, 6))
-sns.heatmap(cm1, annot = True, square = True, fmt = 'g')
+sns.heatmap(cm_lr, annot = True, square = True, fmt = 'g')
 ax.set_xlabel('Predicted label', fontsize = 15)
 ax.set_ylabel('True label', fontsize = 15)
 st.pyplot(fig)
 
 #---
 st.write(f"Predicted Credit Risk (Decision Tree):")
-accuracy2 = accuracy_score(y_test_rf, y_pred2)
-st.write(f"Model Accuracy: {accuracy:.2%}")
+accuracy_rf = accuracy_score(y_test, pred_class_rf)
+st.write(f"Model Accuracy: {accuracy_rf:.2%}")
 
 #---
 fig, ax = plt.subplots(figsize = (6, 6))
-sns.heatmap(cm2, annot = True, square = True, fmt = 'g')
+sns.heatmap(cm_lr, annot = True, square = True, fmt = 'g')
 ax.set_xlabel('Predicted label', fontsize = 15)
 ax.set_ylabel('True label', fontsize = 15)
 st.pyplot(fig)
